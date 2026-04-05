@@ -2,9 +2,10 @@
 // 封装与企业微信API的HTTP请求
 
 const axios = require('axios');
+const WECHAT_API_BASE = process.env.WECHAT_API_BASE
 
 class WeChatService {
-    constructor(apiBase = 'https://qyapi.weixin.qq.com') {
+    constructor(apiBase = WECHAT_API_BASE || 'https://qyapi.weixin.qq.com') {
         this.apiBase = apiBase;
         this.tokenCache = new Map(); // 缓存access_token
     }
@@ -15,7 +16,7 @@ class WeChatService {
             // 检查缓存
             const cacheKey = `${corpid}_${corpsecret}`;
             const cached = this.tokenCache.get(cacheKey);
-            
+
             if (cached && cached.expires > Date.now()) {
                 console.log('使用缓存的access_token');
                 return cached.token;
@@ -30,7 +31,7 @@ class WeChatService {
             });
 
             const { data } = response;
-            
+
             if (data.errcode !== 0) {
                 throw new Error(`获取token失败: ${data.errmsg} (错误码: ${data.errcode})`);
             }
@@ -70,7 +71,7 @@ class WeChatService {
             );
 
             const { data } = response;
-            
+
             if (data.errcode !== 0) {
                 throw new Error(`发送消息失败: ${data.errmsg} (错误码: ${data.errcode})`);
             }
@@ -93,7 +94,7 @@ class WeChatService {
             });
 
             const { data } = response;
-            
+
             if (data.errcode !== 0) {
                 throw new Error(`获取部门列表失败: ${data.errmsg} (错误码: ${data.errcode})`);
             }
@@ -116,7 +117,7 @@ class WeChatService {
             });
 
             const { data } = response;
-            
+
             if (data.errcode !== 0) {
                 throw new Error(`获取成员列表失败: ${data.errmsg} (错误码: ${data.errcode})`);
             }
@@ -157,4 +158,4 @@ class WeChatService {
     }
 }
 
-module.exports = WeChatService; 
+module.exports = WeChatService;
